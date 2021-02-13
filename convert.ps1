@@ -8,16 +8,8 @@ if ( -not (Test-Path .\imagesNew) ) {
     New-Item -Name "imagesNew" -ItemType "directory" | Out-Null
 }
 
-$xResDefault = 500
-$xResPromt = Read-Host "Provide output x-resolution (Default $xResDefault)"
-$xResPromt = ($xResDefault,$xResPromt)[[bool]$xResPromt]
-
-$yResDefault = 500
-$yResPromt = Read-Host "Provide output y-resolution (Default $yResDefault)"
-$yResPromt = ($yResDefault,$yResPromt)[[bool]$yResPromt]
-
-$qualityDefault = 100
-$qualityPromt = Read-Host "Desired quiality [0-100] (Default $qualityDefault)"
+$qualityDefault = 85
+$qualityPromt = Read-Host "Desired quality [0-100] (Default $qualityDefault)"
 $qualityPromt = ($qualityDefault,$qualityPromt)[[bool]$qualityPromt]
 
 $caption = "CONFIRMATION"
@@ -27,7 +19,8 @@ $choices  = '&Yes', '&No'
 $confirmation = $Host.UI.PromptForChoice($caption, $message, $choices, 1)
 if ($confirmation -eq 0) {
     Get-ChildItem .\imagesOld\ | ForEach-Object {
-        .\cwebp.exe -q $qualityPromt -resize $xResPromt $yResPromt $_.FullName -o .\imagesNew\$($_.BaseName).webp
+        $xResolution = 1250
+        .\cwebp.exe -q $qualityPromt -resize $xResolution 0 $_.FullName -o .\imagesNew\$($_.BaseName).webp
     }
 } else {
     Write-Host -ForegroundColor DarkRed "please launch the script again to change your settings"
